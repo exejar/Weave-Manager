@@ -1,14 +1,17 @@
 const { app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const {loadFiles, getMods, minecraftLookup, relaunchWithWeave} = require("./js/launch-util");
-const {fadeWindowIn} = require("./js/window-util");
-
+const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
 
 ipcMain.on("toMain", (event, ...args) => {
     if (args.includes('getModList')) {
         if (getMods.length < 0) loadFiles()
 
         win.webContents.send("fromMain", ['getModList', getMods()])
+    } else if (args.includes('closeWindow')) {
+        fadeWindowOut(BrowserWindow.fromWebContents(event.sender), 0.1, 10, true)
+    } else if (args.includes('minimizeWindow')) {
+        fadeWindowOut(BrowserWindow.fromWebContents(event.sender), 0.1, 10)
     }
 })
 
