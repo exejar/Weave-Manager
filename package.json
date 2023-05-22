@@ -1,0 +1,35 @@
+{
+  "name": "weave-manager",
+  "version": "1.0.0",
+  "description": "Manages Weave mods and responsible for attaching Weave-Loader to Minecraft",
+  "main": "src/main.js",
+  "scripts": {
+    "run": "npm run svelte:build && npm run electron:run",
+    "electron:run": "electron .",
+    "svelte:build": "rollup -c"
+  },
+  "keywords": [
+    "Weave",
+    "Minecraft",
+    "Lunar",
+    "Client",
+    "Modding"
+  ],
+  "author": "exejar",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.1.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "electron": "^24.3.1",
+    "find-process": "^1.4.7",
+    "rollup": "^3.15.0",
+    "rollup-plugin-css-only": "^4.3.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.1.2",
+    "svelte": "^3.59.1",
+    "svelte-preprocess": "^5.0.3",
+    "tailwindcss": "^3.3.2"
+  }
+}
