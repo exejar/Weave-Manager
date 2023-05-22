@@ -59,6 +59,14 @@ app.whenReady().then(() => {
 
     minecraftLookup().then((minecraft) => {
         relaunchWithWeave(minecraft)
+        let mcType
+
+        if (minecraft.cmd.includes('lunar'))
+            mcType = 'Lunar Client'
+        else if (minecraft.cmd.includes('minecraftforge'))
+            mcType = 'Minecraft Forge'
+
+        win.webContents.send('fromMain', ['weaveState', `Weave is currently running in ${mcType}`])
     }).catch((err) => {
         console.log('Error:', err.stack || err)
     })
