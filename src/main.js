@@ -20,18 +20,16 @@ const eventActions = {
         fadeWindowOut(win, 0.1, 10)
     },
     checkUpdates: () => {
-
+        const weaveLoaderFile = retrieveWeaveLoaderFile()
+        const version = extractVersion(weaveLoaderFile)
+        checkUpdates(win, version)
     }
 }
 
 ipcMain.on("toMain", (event, ...args) => {
-    for (const arg of args) {
-        const action = eventActions[arg]
-        if (action) {
-            action()
-            break;
-        }
-    }
+    const action = eventActions[args[0]]
+    if (action)
+        action(args.slice(1))
 })
 
 const createWindow = () => {
@@ -81,6 +79,7 @@ app.whenReady().then(() => {
     loadFiles()
     win = createWindow()
     tray = createTray()
+    startup(win)
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
