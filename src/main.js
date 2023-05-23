@@ -53,6 +53,10 @@ const createTray = () => {
     tray.setToolTip('Weave Manager')
     tray.setContextMenu(contextMenu)
 
+    tray.on('click', () => {
+        win.show()
+    })
+
     return tray
 }
 
