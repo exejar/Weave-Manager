@@ -2,20 +2,35 @@ const { app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
 const path = require('path')
 const {loadFiles, getMods, listenForMinecraft} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
+const {startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion } = require('./js/file-util')
 
 app.setLoginItemSettings({
     openAtLogin: true
 })
 
-ipcMain.on("toMain", (event, ...args) => {
-    if (args.includes('getModList')) {
-        if (getMods.length < 0) loadFiles()
+const eventActions = {
+    getModList: () => {
+        if (getMods().length < 0) loadFiles()
+        win.webContents.send('fromMain', ['getModList', getMods()])
+    },
+    closeWindow: () => {
+        fadeWindowOut(win, 0.1, 10, true)
+    },
+    minimizeWindow: () => {
+        fadeWindowOut(win, 0.1, 10)
+    },
+    checkUpdates: () => {
 
-        win.webContents.send("fromMain", ['getModList', getMods()])
-    } else if (args.includes('closeWindow')) {
-        fadeWindowOut(BrowserWindow.fromWebContents(event.sender), 0.1, 10, true)
-    } else if (args.includes('minimizeWindow')) {
-        fadeWindowOut(BrowserWindow.fromWebContents(event.sender), 0.1, 10)
+    }
+}
+
+ipcMain.on("toMain", (event, ...args) => {
+    for (const arg of args) {
+        const action = eventActions[arg]
+        if (action) {
+            action()
+            break;
+        }
     }
 })
 
