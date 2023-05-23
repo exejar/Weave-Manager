@@ -1,10 +1,10 @@
-const fadeWindowOut =  (_window, step = 0.1, fadeEveryXSeconds = 10, closeWindow = false) =>  {
+const fadeWindowOut =  (_window, step = 0.1, fadeEveryXSeconds = 10, hideWindow = false) =>  {
     let opacity = _window.getOpacity()
     const interval = setInterval(() => {
         if (opacity <= 0) {
             clearInterval(interval)
-            if (closeWindow)
-                _window.close()
+            if (hideWindow)
+                _window.hide()
             else
                 _window.minimize()
         }
