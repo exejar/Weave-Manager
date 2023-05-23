@@ -49,8 +49,13 @@ function checkUpdates(window, currentVersion) {
     fetchGitHubReleases().then(releases => {
         const isUpToDate = isVersionUpToDate(currentVersion, releases)
 
-        if (!isUpToDate)
-            window.webContents.send('fromMain', 'checkUpdates')
+        if (!isUpToDate) {
+            const latestRelease = releases[0]
+            const latestVersion = latestRelease.tag_name
+            const downloadLink = latestRelease.assets[0].browser_download_url
+
+            window.webContents.send('fromMain', ['checkUpdates', {version: latestVersion, download: downloadLink}])
+        }
     }).catch(error => {
         console.log('Error fetching Weave-Loader releases', error)
     })
