@@ -98,6 +98,7 @@ function startup(window) {
     fetchLatestWeave().then(weaveFetch => {
         // weave is not installed
         if (!weaveDirExists) {
+            window.show()
             window.webContents.send('fromMain', ['doInstall', weaveFetch])
             return
         }
@@ -109,6 +110,7 @@ function startup(window) {
         if (!weaveLoaderExists || !modsDirExists) {
             // weave loader is not downloaded, prompt user to update
             if (!weaveLoaderExists) {
+                window.show()
                 window.webContents.send('fromMain', ['checkUpdates', weaveFetch])
                 return
             }
@@ -125,8 +127,10 @@ function startup(window) {
             return
         }
 
-        if (weaveFetch.version !== currentVersion)
+        if (weaveFetch.version !== currentVersion) {
+            window.show()
             window.webContents.send('fromMain', ['checkUpdates', weaveFetch])
+        }
         else
             upToDate = true
     })
