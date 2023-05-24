@@ -127,6 +127,8 @@ function startup(window) {
 
         if (weaveFetch.version !== currentVersion)
             window.webContents.send('fromMain', ['checkUpdates', weaveFetch])
+        else
+            upToDate = true
     })
 }
 
