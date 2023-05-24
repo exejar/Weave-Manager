@@ -1,10 +1,10 @@
 <template>
     <div id="header" class="relative text-xl w-full bg-neutral-900 h-10 flex items-center pl-3 gap-3">
         <div id="header-buttons" class="absolute right-0 h-10 flex justify-end gap-2 p-2">
-            <button class="button hover:bg-neutral-600" on:click={() => window.api.send('toMain', 'minimizeWindow')}>
+            <button class="button hover:bg-neutral-600" on:click={() => window.api.send('toMain', ['minimizeWindow'])}>
                 <i class="fa-solid fa-minus"></i>
             </button>
-            <button class="button hover:bg-red-500 hover:bg-opacity-80" on:click={() => window.api.send('toMain', 'closeWindow')}>
+            <button class="button hover:bg-red-500 hover:bg-opacity-80" on:click={() => window.api.send('toMain', ['closeWindow'])}>
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -15,6 +15,7 @@
 
 <style>
     #header {
+        z-index: 2;
         -webkit-app-region: drag;
     }
 
