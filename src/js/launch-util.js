@@ -4,7 +4,7 @@ const path = require('path')
 const find = require('find-process')
 const {exec, spawn} = require('child_process')
 const userHomeDir = os.homedir()
-const { isUpToDate } = require('./file-util')
+const { retrieveWeaveLoaderFile, isUpToDate } = require('./file-util')
 
 function getMods() {
     return mods
