@@ -41,6 +41,6 @@
     })
 
     onMount(() => {
-        window.api.send("toMain", 'getModList')
+        window.api.send("toMain", ['getModList'])
     })
 </script>
