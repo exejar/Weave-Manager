@@ -4,6 +4,7 @@ const path = require('path')
 const find = require('find-process')
 const {exec, spawn} = require('child_process')
 const userHomeDir = os.homedir()
+const { retrieveWeaveLoaderFile } = require('./file-util')
 
 function getMods() {
     return mods
@@ -12,9 +13,11 @@ function getMods() {
 let mods = []
 function loadFiles() {
     try {
-        const weaveFiles = fs.readdirSync(path.join(userHomeDir, '.weave', 'mods'))
-        const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
-        mods = jarFiles.map(file => ({name: file}))
+        if (fs.existsSync(path.join(userHomeDir, '.weave', 'mods'))) {
+            const weaveFiles = fs.readdirSync(path.join(userHomeDir, '.weave', 'mods'))
+            const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
+            mods = jarFiles.map(file => ({name: file}))
+        }
     } catch (err) {
         console.error('Error reading weave mods', err)
         mods = []
@@ -45,7 +48,7 @@ function relaunchWithWeave(minecraft, window) {
         cwd: getWorkingDirectory(command),
         stdio: 'inherit',
         env: Object.assign(process.env, {
-            JAVA_TOOL_OPTIONS: `-javaagent:${path.join(userHomeDir, '.weave', 'Weave-Loader-Agent-0.1.0.jar')}`
+            JAVA_TOOL_OPTIONS: `-javaagent:${retrieveWeaveLoaderFile()}`
         })
     }
 
