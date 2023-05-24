@@ -4,7 +4,7 @@ const path = require('path')
 const find = require('find-process')
 const {exec, spawn} = require('child_process')
 const userHomeDir = os.homedir()
-const { retrieveWeaveLoaderFile } = require('./file-util')
+const { isUpToDate } = require('./file-util')
 
 function getMods() {
     return mods
@@ -27,14 +27,18 @@ function loadFiles() {
 function minecraftLookup() {
     return new Promise((resolve, reject) => {
         function check() {
-            find('name', "javaw.exe")
-                .then((list) => {
-                    if (list.length > 0) {
-                        resolve(list[0])
-                    } else {
-                        setTimeout(check, 1000)
-                    }
-                }).catch(reject)
+            // Only search for MC processes is weave is installed/up-to-date
+            if (isUpToDate()) {
+                find('name', "javaw.exe")
+                    .then((list) => {
+                        if (list.length > 0) {
+                            resolve(list[0])
+                        } else {
+                            setTimeout(check, 1000)
+                        }
+                    }).catch(reject)
+            } else
+                setTimeout(check, 1000)
         }
         check()
     })

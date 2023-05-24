@@ -7,6 +7,8 @@ const {download} = require('electron-dl')
 const weaveDir = path.join(os.homedir(), '.weave')
 const modsDir = path.join(weaveDir, 'mods')
 
+let upToDate = false
+
 function fetchGitHubReleases() {
     const url = 'https://api.github.com/repos/weave-mc/weave-loader/releases'
     return fetch(url, { headers: {'user-agent': 'node.js'} }).then(response => response.json()).catch(err => {
@@ -79,6 +81,7 @@ function downloadWeave(window, link, version, firstInstall) {
         filename: `Weave-Loader-${version}.jar`
     }
     download(window, link, options).then(() => {
+        upToDate = true
         window.webContents.send('fromMain', [event])
     }).catch(err => {
         console.log("Failed to install Weave-Loader", err)
@@ -127,4 +130,6 @@ function startup(window) {
     })
 }
 
-module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist }
+function isUpToDate() { return upToDate }
+
+module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate }
