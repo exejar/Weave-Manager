@@ -29,13 +29,20 @@ function minecraftLookup() {
         function check() {
             // Only search for MC processes is weave is installed/up-to-date
             if (isUpToDate()) {
-                find('name', "javaw.exe")
+                find('name', /java/i)
                     .then((list) => {
                         if (list.length > 0) {
-                            resolve(list[0])
-                        } else {
-                            setTimeout(check, 1000)
+                            for (const process of list) {
+                                if (process.cmd) {
+                                    if (process.cmd.includes('lunar'))
+                                        resolve({type: "Lunar Client", process: process})
+                                    else if (process.cmd.includes('minecraftforge'))
+                                        resolve({type: "Minecraft Forge", process: process})
+                                }
+                            }
                         }
+
+                        setTimeout(check, 1000)
                     }).catch(reject)
             } else
                 setTimeout(check, 1000)
@@ -71,15 +78,11 @@ function relaunchWithWeave(minecraft, window) {
 
 function listenForMinecraft(window) {
     minecraftLookup().then((minecraft) => {
-        relaunchWithWeave(minecraft, window)
+        const type = minecraft.type
+        const process = minecraft.process
 
-        let mcType
-        if (minecraft.cmd.includes('lunar'))
-            mcType = 'Lunar Client'
-        else if (minecraft.cmd.includes('minecraftforge'))
-            mcType = 'Minecraft Forge'
-
-        window.webContents.send('fromMain', ['weaveState', `Weave is currently running in ${mcType}`])
+        relaunchWithWeave(process, window)
+        window.webContents.send('fromMain', ['weaveState', `Weave is currently running in ${type}`])
     }).catch((err) => {
         console.log('Error:', err.stack || err)
     })
