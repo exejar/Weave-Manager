@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const fetch = require('node-fetch')
 const {download} = require('electron-dl')
+const { exec } = require('child_process')
 
 const weaveDir = path.join(os.homedir(), '.weave')
 const modsDir = path.join(weaveDir, 'mods')
@@ -136,6 +137,15 @@ function startup(window) {
     })
 }
 
+function openModFolder() {
+    const folderPath = path.join(os.homedir(), '.weave', 'mods')
+    switch(os.platform()) {
+        case 'win32': exec(`start "" "${folderPath}"`); break;
+        case 'darwin': exec(`open ${folderPath}`); break;
+        default: exec(`xdg-open ${folderPath}`); break;
+    }
+}
+
 function isUpToDate() { return upToDate }
 
-module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate }
+module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate, openModFolder }

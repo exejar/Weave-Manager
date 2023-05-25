@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
 const path = require('path')
 const {loadFiles, getMods, listenForMinecraft} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
-const {startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist } = require('./js/file-util')
+const {startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
 
 app.setLoginItemSettings({
     openAtLogin: true
@@ -34,6 +34,9 @@ const eventActions = {
     install: (args) => {
         const json = args[0]
         downloadWeave(win, json.download, json.version, true)
+    },
+    openModFolder: () => {
+        openModFolder()
     }
 }
 
