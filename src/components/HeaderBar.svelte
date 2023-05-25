@@ -15,7 +15,7 @@
 
 <style>
     #header {
-        z-index: 2;
+        z-index: 1;
         -webkit-app-region: drag;
     }
 

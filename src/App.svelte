@@ -1,16 +1,20 @@
 <main id="main" class="fixed h-screen w-screen rounded-xl overflow-clip text-neutral-200">
+    <HeaderBar/>
+    <div id="page-content" class="relative w-screen h-screen bg-neutral-800 flex flex-col items-center justify-around p-10 mb-10">
+        <h1>{weaveState}</h1>
+        <CheckUpdateButton/>
+        <ModList/>
+    </div>
     {#if !installed}
         <InstallModal weaveFetch="{{download: downloadLink, version: downloadVersion}}"/>
     {/if}
     {#if !updated}
         <UpdateModal weaveFetch="{{download: downloadLink, version: downloadVersion}}"/>
     {/if}
-    <HeaderBar/>
-    <div id="page-content" class="relative w-screen h-screen bg-neutral-800 flex flex-col items-center justify-around p-10 mb-10">
-        <h1>{weaveState}</h1>
-        <ModList/>
-    </div>
 </main>
+
+<style>
+</style>
 
 <script>
     import HeaderBar from "./components/HeaderBar.svelte";
@@ -18,6 +22,7 @@
     import InstallModal from "./components/InstallModal.svelte";
     import {onMount} from "svelte"
     import UpdateModal from "./components/UpdateModal.svelte";
+    import CheckUpdateButton from "./components/CheckUpdateButton.svelte";
 
     let weaveState = 'Waiting for user to launch Minecraft'
     let installed = true

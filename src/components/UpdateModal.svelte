@@ -1,7 +1,10 @@
 <template>
-    <div id="update-modal" class="absolute w-screen h-screen flex justify-center items-center">
+    <div id="update-modal" class="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
         <div id="content" class="relative w-[30rem] h-[12rem] bg-neutral-800 rounded-xl flex flex-col justify-around items-center">
             <h1>Weave is out-dated on your computer</h1>
+            <div id="keep-current-button" class="w-">
+                Keep current version of Weave
+            </div>
             <div id="update-button" class="w-[20rem] h-10 bg-blue-900 flex justify-center items-center rounded-xl cursor-pointer" on:click={updateWeave} on:keydown={handleKeyDown}>
                 {updateState} to version {weaveFetch.version}
             </div>
@@ -28,7 +31,6 @@
     #update-modal {
         background-color: rgba(0, 0, 0, 25%);
         backdrop-filter: blur(8px);
-        z-index: 1;
     }
     #content {
         box-shadow: 0 0 2rem black;
