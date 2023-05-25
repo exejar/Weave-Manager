@@ -72,7 +72,7 @@ const createWindow = () => {
 }
 
 const createTray = () => {
-    const tray = new Tray('public/icon.ico')
+    const tray = new Tray('public/icon.png')
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Open', click: () => win.show() },
         { label: 'Quit', click: () => app.quit() }
