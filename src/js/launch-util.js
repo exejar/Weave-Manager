@@ -38,8 +38,8 @@ function minecraftLookup() {
                                     if (process.cmd.includes('1.8.9')) {
                                         if (process.cmd.includes('lunar'))
                                             resolve({type: "Lunar Client", process: process})
-                                        else if (process.cmd.includes('minecraftforge'))
-                                            resolve({type: "Minecraft Forge", process: process})
+                                        // else if (process.cmd.includes('minecraftforge'))
+                                            // resolve({type: "Minecraft Forge", process: process})
                                     }
                                 }
                             }
