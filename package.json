@@ -51,6 +51,7 @@
     "svelte-preprocess": "^5.0.3"
   },
   "dependencies": {
+    "chokidar": "^3.5.3",
     "find-process": "^1.4.7",
     "node-fetch": "2.6.7",
     "electron-dl": "^3.5.0",

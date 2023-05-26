@@ -52,15 +52,12 @@
 <script>
     import { onMount } from 'svelte'
     let files = []
-    let dragging
 
-    window.api.receive("fromMain", (data) => {
-        if (data[0].includes('getModList')) {
-            files = data[1]
+    onMount(async () => {
+        async function updateModList() {
+            files = await window.api.invoke('toMain', ['getModList'])
         }
-    })
 
-    onMount(() => {
-        window.api.send("toMain", ['getModList'])
+        setInterval(updateModList, 1000)
     })
 </script>

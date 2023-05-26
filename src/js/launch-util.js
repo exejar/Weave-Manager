@@ -6,24 +6,6 @@ const {exec, spawn} = require('child_process')
 const userHomeDir = os.homedir()
 const { retrieveWeaveLoaderFile, isUpToDate } = require('./file-util')
 
-function getMods() {
-    return mods
-}
-
-let mods = []
-function loadFiles() {
-    try {
-        if (fs.existsSync(path.join(userHomeDir, '.weave', 'mods'))) {
-            const weaveFiles = fs.readdirSync(path.join(userHomeDir, '.weave', 'mods'))
-            const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
-            mods = jarFiles.map(file => ({name: file}))
-        }
-    } catch (err) {
-        console.error('Error reading weave mods', err)
-        mods = []
-    }
-}
-
 function minecraftLookup() {
     return new Promise((resolve, reject) => {
         function check() {
@@ -147,5 +129,5 @@ function getWorkingDirectory(launchCommand) {
 }
 
 module.exports = {
-    getMods, loadFiles, getWorkingDirectory, listenForMinecraft
+    getWorkingDirectory, listenForMinecraft
 }

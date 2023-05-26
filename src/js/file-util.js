@@ -4,6 +4,7 @@ const fs = require('fs')
 const fetch = require('node-fetch')
 const {download} = require('electron-dl')
 const { exec } = require('child_process')
+const chokidar = require('chokidar')
 
 const weaveDir = path.join(os.homedir(), '.weave')
 const modsDir = path.join(weaveDir, 'mods')
@@ -122,6 +123,12 @@ function startup(window) {
                 fs.mkdirSync(modsDir)
         }
 
+        const watcher = chokidar.watch(modsDir, {
+            awaitWriteFinish: true, // Wait for writes to finish before triggering events
+            persistent: true // Keep watching even if the process is idle
+        })
+        watcher.on('add', retrieveModFiles).on('unlink', retrieveModFiles)
+
         const currentVersion = extractVersion(weaveLoaderFile)
         if (currentVersion === null) {
             console.log("Failed to find Weave-Loader jar, make sure the name isn't modified")
@@ -146,6 +153,25 @@ function openModFolder() {
     }
 }
 
+function getMods() {
+    return mods
+}
+
+let mods = []
+function retrieveModFiles() {
+    console.log("retrieve mod files")
+    try {
+        if (fs.existsSync(modsDir)) {
+            const weaveFiles = fs.readdirSync(modsDir)
+            const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
+            mods = jarFiles.map(file => ({name: file}))
+        }
+    } catch (err) {
+        console.error('Error reading weave mods', err)
+        mods = []
+    }
+}
+
 function isUpToDate() { return upToDate }
 
-module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate, openModFolder }
+module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate, openModFolder, getMods, retrieveModFiles }

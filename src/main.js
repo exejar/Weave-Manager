@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
 const path = require('path')
-const {loadFiles, getMods, listenForMinecraft} = require("./js/launch-util");
+const {listenForMinecraft} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
-const {startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
+const {getMods, retrieveModFiles, startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
 const {autoUpdater} = require('electron-updater')
 
 app.setLoginItemSettings({
@@ -10,9 +10,6 @@ app.setLoginItemSettings({
 })
 
 const eventActions = {
-    getModList: () => {
-        win.webContents.send('fromMain', ['getModList', getMods()])
-    },
     closeWindow: () => {
         fadeWindowOut(win, 0.1, 10, true)
     },
@@ -44,10 +41,22 @@ const eventActions = {
     }
 }
 
+const invokeActions = {
+    getModList: () => {
+        return getMods()
+    },
+}
+
 ipcMain.on("toMain", (event, args) => {
     const action = eventActions[args[0]]
     if (action)
         action(args.slice(1))
+})
+
+ipcMain.handle('toMain', (event, args) => {
+    const action = invokeActions[args[0]]
+    if (action)
+        return action(args.slice(1))
 })
 
 const createWindow = () => {
@@ -100,7 +109,7 @@ const createTray = () => {
 let win
 let tray
 app.whenReady().then(() => {
-    loadFiles()
+    retrieveModFiles()
     win = createWindow()
     tray = createTray()
 
