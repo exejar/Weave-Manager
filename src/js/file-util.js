@@ -127,7 +127,7 @@ function startup(window) {
             awaitWriteFinish: true, // Wait for writes to finish before triggering events
             persistent: true // Keep watching even if the process is idle
         })
-        watcher.on('add', retrieveModFiles).on('unlink', retrieveModFiles)
+        watcher.on('add', () => retrieveModFilesAndNotify(window)).on('unlink', () => retrieveModFilesAndNotify(window))
 
         const currentVersion = extractVersion(weaveLoaderFile)
         if (currentVersion === null) {
@@ -159,7 +159,6 @@ function getMods() {
 
 let mods = []
 function retrieveModFiles() {
-    console.log("retrieve mod files")
     try {
         if (fs.existsSync(modsDir)) {
             const weaveFiles = fs.readdirSync(modsDir)
@@ -170,6 +169,11 @@ function retrieveModFiles() {
         console.error('Error reading weave mods', err)
         mods = []
     }
+}
+
+function retrieveModFilesAndNotify(window) {
+    retrieveModFiles()
+    window.webContents.send('fromMain', ['updatedModList'])
 }
 
 function isUpToDate() { return upToDate }

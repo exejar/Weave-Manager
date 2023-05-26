@@ -53,11 +53,19 @@
     import { onMount } from 'svelte'
     let files = []
 
-    onMount(async () => {
-        async function updateModList() {
+    const eventActions = {
+        updatedModList: async () => {
             files = await window.api.invoke('toMain', ['getModList'])
         }
+    }
 
-        setInterval(updateModList, 1000)
+    window.api.receive('fromMain', (data) => {
+        const action = eventActions[data[0]]
+        if (action)
+            action(data.slice(1))
+    })
+
+    onMount(async () => {
+        files = await window.api.invoke('toMain', ['getModList'])
     })
 </script>
