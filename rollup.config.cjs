@@ -14,7 +14,7 @@ module.exports = {
         sourcemap: true,
         format: 'iife',
         name: 'app',
-        file: 'public/build/bundle.js',
+        file: 'buildResources/bundle.js',
         inlineDynamicImports: true
     },
     plugins: [

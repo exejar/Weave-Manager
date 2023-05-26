@@ -75,14 +75,14 @@ const createWindow = () => {
         fadeWindowIn(win, 0.1, 10)
     })
 
-    win.setIcon('public/icon.png')
-    win.loadFile('public/index.html')
+    win.setIcon(path.join(__dirname, '..', 'buildResources', 'icon.png'))
+    win.loadFile(path.join(__dirname, '..', 'buildResources', 'index.html'))
 
     return win
 }
 
 const createTray = () => {
-    const tray = new Tray('public/icon.png')
+    const tray = new Tray(path.join(__dirname, '..', 'buildResources', 'icon.png'))
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Open', click: () => win.show() },
         { label: 'Quit', click: () => app.quit() }
