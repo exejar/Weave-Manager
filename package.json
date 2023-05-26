@@ -16,6 +16,12 @@
     "productName": "Weave Manager",
     "nsis": {
       "createDesktopShortcut": "always"
+    },
+    "snap": {
+      "publish": {
+        "provider": "generic",
+        "url": "https://anydummyurl.com"
+      }
     }
   },
   "repository": {
