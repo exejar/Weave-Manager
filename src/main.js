@@ -3,6 +3,7 @@ const path = require('path')
 const {loadFiles, getMods, listenForMinecraft} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
 const {startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
+const {autoUpdater} = require('electron-updater')
 
 app.setLoginItemSettings({
     openAtLogin: true
@@ -37,6 +38,9 @@ const eventActions = {
     },
     openModFolder: () => {
         openModFolder()
+    },
+    restartApp: () => {
+        autoUpdater.quitAndInstall()
     }
 }
 
@@ -63,6 +67,12 @@ const createWindow = () => {
 
     win.once('ready-to-show', () => {
         win.show()
+        autoUpdater.checkForUpdatesAndNotify()
+        startup(win)
+    })
+
+    win.on('focus', () => {
+        fadeWindowIn(win, 0.1, 10)
     })
 
     win.setIcon('public/icon.png')
@@ -94,19 +104,11 @@ app.whenReady().then(() => {
     win = createWindow()
     tray = createTray()
 
-    win.on('ready-to-show', () => {
-        startup(win)
-    })
-
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             win = createWindow()
             win.openDevTools()
         }
-    })
-
-    win.on('focus', () => {
-        fadeWindowIn(win, 0.1, 10)
     })
 
     listenForMinecraft(win)
@@ -118,3 +120,9 @@ app.on('window-all-closed', () => {
     }
 })
 
+autoUpdater.on('update-available', () => {
+    win.webContents.send('fromMain', ['updateAvailable'])
+})
+autoUpdater.on('update-downloaded', () => {
+    win.webContents.send('fromMain', ['updateDownloaded'])
+})
