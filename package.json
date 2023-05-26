@@ -7,8 +7,8 @@
     "run": "npm run svelte:build && npm run electron:run",
     "electron:run": "electron .",
     "svelte:build": "rollup -c",
-    "build": "npm run svelte:build && electron-builder build --win --publish never",
-    "deploy": "electron-builder build --win --publish always"
+    "build": "npm run svelte:build && electron-builder build --publish never",
+    "deploy": "npm run svelte:build && electron-builder build --publish always"
   },
   "build": {
     "appId": "net.weavemc.manager",
