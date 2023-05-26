@@ -34,10 +34,13 @@ function minecraftLookup() {
                         if (list.length > 0) {
                             for (const process of list) {
                                 if (process.cmd) {
-                                    if (process.cmd.includes('lunar'))
-                                        resolve({type: "Lunar Client", process: process})
-                                    else if (process.cmd.includes('minecraftforge'))
-                                        resolve({type: "Minecraft Forge", process: process})
+                                    // currently weave only supports 1.8.9, so we will only attach to 1.8.9 instances of Minecraft
+                                    if (process.cmd.includes('1.8.9')) {
+                                        if (process.cmd.includes('lunar'))
+                                            resolve({type: "Lunar Client", process: process})
+                                        else if (process.cmd.includes('minecraftforge'))
+                                            resolve({type: "Minecraft Forge", process: process})
+                                    }
                                 }
                             }
                         }
@@ -92,6 +95,14 @@ function listenForMinecraft(window) {
 function killMinecraft(minecraft) {
     switch (os.platform()) {
         case 'win32': {
+            // kill launcher first to prevent flooding crash codes
+            exec(`taskkill /f /pid ${minecraft.ppid}`, (err, stdout, stderr) => {
+                if (err)
+                    console.error(`Failed to kill minecraft parent with PID ${minecraft.ppid}: ${err.message}`)
+                else if (stderr)
+                    console.log(`Error killing minecraft parent with PID ${minecraft.ppid}: ${stderr}`)
+            })
+
             exec(`taskkill /f /pid ${minecraft.pid}`, (err, stdout, stderr) => {
                 if (err)
                     console.error(`Failed to kill minecraft with PID ${minecraft.pid}: ${err.message}`)
@@ -102,6 +113,14 @@ function killMinecraft(minecraft) {
         }
         // linux and darwin (mac) kill processes the same
         default: {
+            // kill launcher first to prevent flooding crash codes
+            exec(`kill -9 ${minecraft.pid}`, (err, stdout, stderr) => {
+                if (err)
+                    console.error(`Failed to kill minecraft parent with PID ${minecraft.ppid}: ${err.message}`)
+                else if (stderr)
+                    console.log(`Error killing minecraft parent with PID ${minecraft.ppid}: ${stderr}`)
+            })
+
             exec(`kill -9 ${minecraft.pid}`, (err, stdout, stderr) => {
                 if (err)
                     console.error(`Failed to kill minecraft with PID ${minecraft.pid}: ${err.message}`)
