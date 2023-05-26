@@ -5,7 +5,7 @@
                 <h1>Weave Manager is out-dated on your computer</h1>
                 <h1>Downloading updates...</h1>
             {:else}
-                <h1>Update downloaded. It will be installed on restart. Restart now?</h1>
+                <h1>Update downloaded. It will be installed on restart.<br>Restart now?</h1>
                 <div id="install-manager-button" class="w-[20rem] h-10 bg-blue-900 flex justify-center items-center rounded-xl cursor-pointer" on:click={updateManager} on:keydown={handleKeyDown}>
                     Restart Weave-Manager
                 </div>
