@@ -5,6 +5,7 @@ const fetch = require('node-fetch')
 const {download} = require('electron-dl')
 const { exec } = require('child_process')
 const chokidar = require('chokidar')
+const StreamZip = require('node-stream-zip')
 
 const weaveDir = path.join(os.homedir(), '.weave')
 const modsDir = path.join(weaveDir, 'mods')
@@ -163,7 +164,38 @@ function retrieveModFiles() {
         if (fs.existsSync(modsDir)) {
             const weaveFiles = fs.readdirSync(modsDir)
             const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
-            mods = jarFiles.map(file => ({name: file}))
+
+            for (const jar of jarFiles) {
+                const zip = new StreamZip({
+                    file: path.join(modsDir, jar)
+                })
+
+                zip.on('ready', () => {
+                    const entries = zip.entries()
+                    const weaveEntry = entries['weave.mod.json']
+                    const iconEntry = entries['icon.png']
+
+                    let modInfo = {
+                        fileName: jar,
+                        about: null,
+                        image: null
+                    }
+
+                    if (weaveEntry) {
+                        const jsonContent = zip.entryDataSync(weaveEntry).toString('utf8')
+                        const weaveMod = JSON.parse(jsonContent)
+                        modInfo.about = weaveMod.about
+                    }
+
+                    if (iconEntry)
+                        modInfo.image = zip.entryDataSync(iconEntry)
+
+                    console.log(modInfo)
+
+                    mods.push(modInfo)
+                    zip.close()
+                })
+            }
         }
     } catch (err) {
         console.error('Error reading weave mods', err)

@@ -54,6 +54,7 @@
     "chokidar": "^3.5.3",
     "find-process": "^1.4.7",
     "node-fetch": "2.6.7",
+    "node-stream-zip": "^1.15.0",
     "electron-dl": "^3.5.0",
     "electron-updater": "^5.3.0",
     "svelte": "^3.59.1",
