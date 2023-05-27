@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
 const path = require('path')
 const {listenForMinecraft, relaunchWithWeave} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
-const {getMods, retrieveModFiles, startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
+const {disableMod, enableMod, getMods, retrieveModFiles, startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
 const {autoUpdater} = require('electron-updater')
 
 app.setLoginItemSettings({
@@ -45,6 +45,12 @@ const eventActions = {
     ignoreRelaunch: () => {
         /* Start listening for Minecraft again */
         listenForMinecraft(win)
+    },
+    disableMod: (args) => {
+        disableMod(args[0])
+    },
+    enableMod: (args) => {
+        enableMod(args[0])
     }
 }
 

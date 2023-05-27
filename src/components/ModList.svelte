@@ -9,20 +9,7 @@
 
         <div id="modlist" class="w-full h-80 overflow-y-scroll rounded-xl">
             {#each files as file}
-                <div class="relative mod w-full h-16 flex items-center pl-5">
-                    {#if file.image !== null}
-                        <img class="h-12 w-12" src="{URL.createObjectURL(new Blob([file.image.buffer], { type: 'image/png' }))}" alt="Mod Image" />
-                    {/if}
-
-                    {#if !file.about}
-                        <h1 class="ml-[3.75rem]">{file.fileName}</h1>
-                        <p class="ml-3 text-neutral-400">Empty About Section</p>
-                    {:else}
-                        <h1 class="ml-3">{file.about.name} v{file.about.version}</h1>
-                        <p class="ml-3 text-neutral-400">{file.about.description}</p>
-                        <p class="absolute right-5 text-neutral-500">{file.about.author}</p>
-                    {/if}
-                </div>
+                <ModListEntry modFile="{file}"/>
             {/each}
         </div>
 
@@ -64,6 +51,7 @@
 
 <script>
     import { onMount } from 'svelte'
+    import ModListEntry from "./ModListEntry.svelte";
     let files = []
 
     const eventActions = {

@@ -166,7 +166,7 @@ function retrieveModFiles() {
                 mods = []
 
                 const weaveFiles = fs.readdirSync(modsDir)
-                const jarFiles = weaveFiles.filter(file => file.endsWith('.jar'))
+                const jarFiles = weaveFiles.filter(file => file.includes('.jar'))
 
                 const promises = jarFiles.map(jar => {
                     return new Promise((resolve, reject) => {
@@ -182,6 +182,7 @@ function retrieveModFiles() {
 
                             let modInfo = {
                                 fileName: jar,
+                                enabled: !jar.endsWith('.disable'),
                                 about: null,
                                 image: null
                             }
@@ -219,6 +220,22 @@ function retrieveModFilesAndNotify(window) {
     window.webContents.send('fromMain', ['updatedModList'])
 }
 
+function disableMod(fileName) {
+    const filePath = path.join(modsDir, fileName)
+    fs.rename(filePath, filePath + '.disable', (err) => {
+        if (err)
+            console.error('Error disabling mod:', err)
+    })
+}
+
+function enableMod(fileName) {
+    const filePath = path.join(modsDir, fileName)
+    fs.rename(filePath, filePath.replace('.disable', ''), (err) => {
+        if (err)
+            console.error('Error disabling mod:', err)
+    })
+}
+
 function isUpToDate() { return upToDate }
 
-module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate, openModFolder, getMods, retrieveModFiles }
+module.exports = { startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, isUpToDate, openModFolder, getMods, retrieveModFiles, disableMod, enableMod }
