@@ -1,6 +1,13 @@
 <template>
-    <div id="modlist" class="relative w-full h-80 rounded-xl">
-        <div id="list" class="w-full h-full overflow-y-scroll">
+    <div id="modlist-wrapper" class="relative w-full h-[23rem]">
+        <div id="mod-folder-button" class="bg-blue-900 w-8 h-8 rounded-lg cursor-pointer mb-2">
+            <div id="mod-icon" class="flex items-center justify-center w-full h-full" on:click={() => {window.api.send('toMain', ['openModFolder'])}}>
+                <i class="fa-solid fa-folder"></i>
+            </div>
+            <span class="tooltiptext absolute w-28 rounded-lg text-center top-0 ml-10">Open Mods Folder</span>
+        </div>
+
+        <div id="modlist" class="w-full h-80 overflow-y-scroll rounded-xl">
             {#each files as file}
                 <div class="relative mod w-full h-16 flex items-center pl-5">
                     {#if file.image !== null}
@@ -12,19 +19,14 @@
                         <p class="ml-3 text-neutral-400">Empty About Section</p>
                     {:else}
                         <h1 class="ml-3">{file.about.name} v{file.about.version}</h1>
-                        <p class="ml-3 text-neutral-400"><i>{file.about.description}</i></p>
+                        <p class="ml-3 text-neutral-400">{file.about.description}</p>
                         <p class="absolute right-5 text-neutral-500">{file.about.author}</p>
                     {/if}
                 </div>
             {/each}
         </div>
 
-        <div id="mod-folder-button" class="absolute top-2 left-2 bg-blue-900 w-8 h-8 rounded-lg cursor-pointer">
-            <div id="mod-icon" class="flex items-center justify-center w-full h-full" on:click={() => {window.api.send('toMain', ['openModFolder'])}}>
-                <i class="fa-solid fa-folder"></i>
-            </div>
-            <span class="tooltiptext absolute w-28 rounded-lg text-center top-0 ml-10">Open Mods Folder</span>
-        </div>
+
     </div>
 </template>
 
