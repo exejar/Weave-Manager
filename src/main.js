@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
 const path = require('path')
-const {listenForMinecraft} = require("./js/launch-util");
+const {listenForMinecraft, relaunchWithWeave} = require("./js/launch-util");
 const {fadeWindowIn, fadeWindowOut} = require("./js/window-util");
 const {getMods, retrieveModFiles, startup, checkUpdates, retrieveWeaveLoaderFile, extractVersion, downloadWeave, doesWeaveDirExist, openModFolder } = require('./js/file-util')
 const {autoUpdater} = require('electron-updater')
@@ -38,6 +38,13 @@ const eventActions = {
     },
     restartApp: () => {
         autoUpdater.quitAndInstall()
+    },
+    relaunchWithWeave: (args) => {
+        relaunchWithWeave(args[0], win)
+    },
+    ignoreRelaunch: () => {
+        /* Start listening for Minecraft again */
+        listenForMinecraft(win)
     }
 }
 

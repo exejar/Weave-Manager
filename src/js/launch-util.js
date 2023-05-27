@@ -5,15 +5,21 @@ const {exec, spawn} = require('child_process')
 const userHomeDir = os.homedir()
 const { retrieveWeaveLoaderFile, isUpToDate } = require('./file-util')
 
+let ignore = new Set()
+
 function minecraftLookup() {
     return new Promise((resolve, reject) => {
         function check() {
-            // Only search for MC processes is weave is installed/up-to-date
+            // Only search for MC processes if weave is installed/up-to-date
             if (isUpToDate()) {
                 find('name', /java/i)
                     .then((list) => {
                         if (list.length > 0) {
                             for (const process of list) {
+                                /* Skip processes that were ignored */
+                                if (ignore.has(process.pid))
+                                    continue
+
                                 if (process.cmd) {
                                     // currently weave only supports 1.8.9, so we will only attach to 1.8.9 instances of Minecraft
                                     if (process.cmd.includes('1.8.9')) {
@@ -35,9 +41,12 @@ function minecraftLookup() {
     })
 }
 function relaunchWithWeave(minecraft, window) {
-    killMinecraft(minecraft)
+    const type = minecraft.type
+    const mcProcess = minecraft.process
 
-    const [command, ...args] = minecraft.cmd.split(' ')
+    killMinecraft(mcProcess)
+
+    const [command, ...args] = mcProcess.cmd.split(' ')
 
     const options = {
         cwd: getWorkingDirectory(command),
@@ -48,6 +57,8 @@ function relaunchWithWeave(minecraft, window) {
     }
 
     const child = spawn(command, args, options)
+
+    window.webContents.send('fromMain', ['weaveState', `Weave is currently running in ${type}`])
 
     child.on('error', (err) => {
         console.error('Failed to spawn Minecraft', err)
@@ -62,11 +73,9 @@ function relaunchWithWeave(minecraft, window) {
 
 function listenForMinecraft(window) {
     minecraftLookup().then((minecraft) => {
-        const type = minecraft.type
-        const process = minecraft.process
-
-        relaunchWithWeave(process, window)
-        window.webContents.send('fromMain', ['weaveState', `Weave is currently running in ${type}`])
+        ignore.add(minecraft.process.pid)
+        window.webContents.send('fromMain', ['foundMinecraftProcess', minecraft])
+        window.show()
     }).catch((err) => {
         console.log('Error:', err.stack || err)
     })
@@ -128,5 +137,5 @@ function getWorkingDirectory(launchCommand) {
 }
 
 module.exports = {
-    getWorkingDirectory, listenForMinecraft
+    getWorkingDirectory, listenForMinecraft, relaunchWithWeave
 }

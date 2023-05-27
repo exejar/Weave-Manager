@@ -14,6 +14,7 @@
     {#if !updatedManager}
         <UpdateManagerModal downloaded="{managerUpdateDownloaded}"/>
     {/if}
+    <RelaunchModal/>
 </main>
 
 <style>
@@ -27,6 +28,7 @@
     import CheckUpdateButton from "./components/CheckUpdateButton.svelte";
     import UpdateManagerModal from "./components/UpdateManagerModal.svelte";
     import {onMount} from "svelte"
+    import RelaunchModal from "./components/RelaunchModal.svelte";
 
     let weaveState = 'Waiting for user to launch Minecraft'
     let installedLoader = true
