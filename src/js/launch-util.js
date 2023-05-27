@@ -11,31 +11,28 @@ function minecraftLookup() {
     return new Promise((resolve, reject) => {
         function check() {
             // Only search for MC processes if weave is installed/up-to-date
-            if (isUpToDate()) {
-                find('name', /java/i)
-                    .then((list) => {
-                        if (list.length > 0) {
-                            for (const process of list) {
-                                /* Skip processes that were ignored */
-                                if (ignore.has(process.pid))
-                                    continue
+            find('name', /java/i)
+                .then((list) => {
+                    if (list.length > 0) {
+                        for (const process of list) {
+                            /* Skip processes that were ignored */
+                            if (ignore.has(process.pid))
+                                continue
 
-                                if (process.cmd) {
-                                    // currently weave only supports 1.8.9, so we will only attach to 1.8.9 instances of Minecraft
-                                    if (process.cmd.includes('1.8.9')) {
-                                        if (process.cmd.includes('lunar'))
-                                            resolve({type: "Lunar Client", process: process})
-                                        // else if (process.cmd.includes('minecraftforge'))
-                                            // resolve({type: "Minecraft Forge", process: process})
-                                    }
+                            if (process.cmd) {
+                                // currently weave only supports 1.8.9, so we will only attach to 1.8.9 instances of Minecraft
+                                if (process.cmd.includes('1.8.9')) {
+                                    if (process.cmd.includes('lunar'))
+                                        resolve({type: "Lunar Client", process: process})
+                                    // else if (process.cmd.includes('minecraftforge'))
+                                        // resolve({type: "Minecraft Forge", process: process})
                                 }
                             }
                         }
+                    }
 
-                        setTimeout(check, 1000)
-                    }).catch(reject)
-            } else
-                setTimeout(check, 1000)
+                    setTimeout(check, 1000)
+                }).catch(reject)
         }
         check()
     })
