@@ -43,7 +43,14 @@ function relaunchWithWeave(minecraft, window) {
 
     killMinecraft(mcProcess)
 
-    const [command, ...args] = mcProcess.cmd.split(' ')
+    // Split command using spaces outside quotation marks
+    console.log(mcProcess.cmd)
+
+    const commandRegex = /[^\s"']+|"([^"]*)"|'([^']*)'/g
+    const split = mcProcess.cmd.match(commandRegex).map(arg => arg.replace(/"/g, ''))
+    const command = split[0]
+    const args = split.slice(1)
+
 
     const options = {
         cwd: getWorkingDirectory(command),
