@@ -12,7 +12,7 @@ Weave Manager is a program designed to manage Minecraft mods for the Weave mod l
 
 ### Installation
 
-1. Download the latest release of Weave Manager Setup that fits your operating system from the [Releases](https://github.com/your-username/weave-manager/releases) page.
+1. Download the latest release of Weave Manager Setup that fits your operating system from the [Releases](https://github.com/exejar/Weave-Manager/releases) page.
 2. Run the setup.
 
 ### Usage
